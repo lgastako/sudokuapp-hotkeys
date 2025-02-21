@@ -13,8 +13,9 @@
 
   console.log("Sudokupad Hotkeys script loaded and running");
 
-  // Track if pen tool is active
+  // Track if tools are active
   let isPenToolActive = false;
+  let isLetterToolActive = false;
 
   // Helper function to simulate a click on an element
   function simulateClick(element) {
@@ -59,6 +60,39 @@
     element.dispatchEvent(new MouseEvent("mousedown", eventOptions));
   }
 
+  // Helper function to toggle a tool
+  function toggleTool(toolId, toolName, isActive) {
+    const settingsButton = document.querySelector("#control-settings");
+    if (settingsButton) {
+      console.log(`Opening settings panel to toggle ${toolName}`);
+      simulateClick(settingsButton);
+
+      const toolCheckbox = document.querySelector(toolId);
+      if (toolCheckbox) {
+        console.log(`Found ${toolName} checkbox:`, toolCheckbox);
+        console.log(`Toggling ${toolName} checkbox`);
+        toolCheckbox.click();
+
+        const escapeEvent = new KeyboardEvent("keydown", {
+          key: "Escape",
+          code: "Escape",
+          keyCode: 27,
+          which: 27,
+          bubbles: true,
+          cancelable: true,
+        });
+
+        document.dispatchEvent(escapeEvent);
+        return true;
+      } else {
+        console.log(`Could not find ${toolName} checkbox`);
+      }
+    } else {
+      console.log("Could not find settings button");
+    }
+    return false;
+  }
+
   document.addEventListener("keydown", function (e) {
     console.log("Key pressed:", e.key);
 
@@ -66,36 +100,25 @@
     if (e.key.toLowerCase() === "k") {
       e.preventDefault();
       console.log("K key pressed - toggling pen tool");
+      if (toggleTool("#toolpen", "pen tool", isPenToolActive)) {
+        isPenToolActive = !isPenToolActive;
+        console.log(
+          "Pen tool is now:",
+          isPenToolActive ? "active" : "inactive"
+        );
+      }
+    }
 
-      // Click the settings button
-      const settingsButton = document.querySelector("#control-settings");
-      if (settingsButton) {
-        console.log("Opening settings panel");
-        simulateClick(settingsButton);
-
-        const penCheckbox = document.querySelector("#toolpen");
-        if (penCheckbox) {
-          console.log("Found pen checkbox:", penCheckbox);
-          console.log("Toggling pen tool checkbox");
-          //penCheckbox.checked = !penCheckbox.checked;
-
-          penCheckbox.click();
-
-          const escapeEvent = new KeyboardEvent("keydown", {
-            key: "Escape",
-            code: "Escape",
-            keyCode: 27,
-            which: 27,
-            bubbles: true,
-            cancelable: true,
-          });
-
-          document.dispatchEvent(escapeEvent);
-        } else {
-          console.log("Could not find pen checkbox");
-        }
-      } else {
-        console.log("Could not find settings button");
+    // Use 'l' key for letter tool toggle
+    if (e.key.toLowerCase() === "l") {
+      e.preventDefault();
+      console.log("L key pressed - toggling letter tool");
+      if (toggleTool("#toolletter", "letter tool", isLetterToolActive)) {
+        isLetterToolActive = !isLetterToolActive;
+        console.log(
+          "Letter tool is now:",
+          isLetterToolActive ? "active" : "inactive"
+        );
       }
     }
   });

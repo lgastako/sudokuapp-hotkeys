@@ -1,9 +1,0 @@
----
-description: This rule is helpful all the time.
-globs: 
----
-As we work together to understand how to implement things properly, please create and update notes in
-NOTES.md as appropriate.
-
-In particular if as we learn things about how the site
-works that we need to know to wire up the keys properly, please record that information in the notes.
